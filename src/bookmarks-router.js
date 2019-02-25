@@ -1,12 +1,13 @@
-const express = require("express");
+/* eslint-disable strict */
+const express = require('express');
 const bookmarksRouter = express.Router();
-const logger = require("../logger");
-const { BOOKMARKS } = require("../store");
+const logger = require('./logger');
+const { BOOKMARKS } = require('./store');
 const bodyParser = express.json();
-const uuid = require("uuid/v4");
+const uuid = require('uuid/v4');
 
 bookmarksRouter
-  .route("/")
+  .route('/')
   .get((req, res) => {
     res.json(BOOKMARKS);
   })
@@ -20,8 +21,8 @@ bookmarksRouter
       content
     };
     if (!title || !url) {
-      logger.error("No title or url were submitted.");
-      return res.status(404).send("Please submit a title and URL.");
+      logger.error('No title or url were submitted.');
+      return res.status(404).send('Please submit a title and URL.');
     }
     BOOKMARKS.push(newBookmark);
     res
@@ -30,23 +31,22 @@ bookmarksRouter
       .json(newBookmark);
   });
 bookmarksRouter
-  .route("/:id")
+  .route('/:id')
   .get((req, res) => {
     const { id } = req.params;
     const bookmark = BOOKMARKS.find(bookmark => bookmark.id === id);
     if (!bookmark) {
       logger.error(`Bookmark not found with id: ${id}`);
-      return res.status(404).send("Bookmark not found.");
+      return res.status(404).send('Bookmark not found.');
     }
     res.json(bookmark);
   })
   .delete((req, res) => {
     const { id } = req.params;
     const bookmarkIndex = BOOKMARKS.findIndex(bookmark => bookmark.id === id);
-    console.log(bookmarkIndex);
     if (bookmarkIndex === - 1) {
       logger.error(`Bookmark not found with id: ${id}`);
-      return res.status(404).send("Bookmark not found.");
+      return res.status(404).send('Bookmark not found.');
     }
     BOOKMARKS.splice(bookmarkIndex, 1);
     res.status(204).end();
